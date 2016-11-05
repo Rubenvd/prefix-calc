@@ -23,9 +23,11 @@ objs/%.o: src/%.cpp
 objs/%.o: main/%.cpp
 	$(GCC) -c $^ -o $@
 
-test: $(TESTS)
+test: $(MAINS) $(TESTS)
 
-run_test: $(RUN_TESTS)
+run_test: test test_to_run
+
+test_to_run: $(TESTS)
 	$(foreach test,$^, ./$(test);)
 
 test_output/%: $(OBJS) test/gtest_main.a objs/%.o
