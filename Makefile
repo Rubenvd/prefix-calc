@@ -10,7 +10,6 @@ MAINS=$(patsubst main/%.cpp,output/%, $(MAINSRC))
 TESTSRC=$(wildcard test/*.cpp)
 TESTOBJS=$(patsubst test/%.cpp,objs/%.o, $(TESTSRC))
 TESTS=$(patsubst test/%.cpp,test_output/%, $(TESTSRC))
-RUN_TESTS=$(wildcard test_output/*)
 
 all: $(MAINS)
 
