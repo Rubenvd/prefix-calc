@@ -1,6 +1,6 @@
 INC=-I ./include
 TESTINC= -isystem ./googletest/include -I./googletest -I./
-GCC=g++ -Wall $(INC)
+GCC=g++ -Wall -std=c++11 $(INC)
 
 SRCFILES=$(wildcard src/*.cpp)
 OBJS=$(patsubst src/%.cpp,objs/%.o, $(SRCFILES))
