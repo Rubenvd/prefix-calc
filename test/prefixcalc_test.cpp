@@ -33,9 +33,24 @@ TEST(PrefixCalc, ConstructorCommaAfter)
     PrefixCalc("4.");
 }
 
-TEST(PrefixCalc, ConstructorNormalCalc)
+TEST(PrefixCalc, ConstructorNormalMultiple)
 {
     PrefixCalc("* 1 3");
+}
+
+TEST(PrefixCalc, ConstructorNormalDivide)
+{
+    PrefixCalc("/ 1 3");
+}
+
+TEST(PrefixCalc, ConstructorNormalMinus)
+{
+    PrefixCalc("- 1 3");
+}
+
+TEST(PrefixCalc, ConstructorNormalPlus)
+{
+    PrefixCalc("+ 1 3");
 }
 
 TEST(PrefixCalc, ConstructorDivideByZero)
@@ -65,6 +80,30 @@ TEST(PrefixCalc, ConstructorBadOperator)
         PrefixCalc("a 4 9");
         FAIL();
     }catch(std::string){}
+}
+
+TEST(PrefixCalc, NormalMultiple)
+{
+    PrefixCalc calc("* 1 3");
+    ASSERT_TRUE(closeEnough(calc.getValue(), 3));
+}
+
+TEST(PrefixCalc, NormalDivide)
+{
+    PrefixCalc calc("/ 1 3");
+    ASSERT_TRUE(closeEnough(calc.getValue(), 1.0/3.0));
+}
+
+TEST(PrefixCalc, NormalMinus)
+{
+    PrefixCalc calc("- 1 3");
+    ASSERT_TRUE(closeEnough(calc.getValue(), -2));
+}
+
+TEST(PrefixCalc, NormalPlus)
+{
+    PrefixCalc calc("+ 1 3");
+    ASSERT_TRUE(closeEnough(calc.getValue(), 4));
 }
 
 TEST(PrefixCalc, DivideByZero)
@@ -147,6 +186,14 @@ TEST(PrefixCalc, NegativeInMiddle)
     }catch(std::string){}
 }
 
+TEST(PrefixCalc, DoubleComma)
+{
+    try{
+        PrefixCalc calc("2..2");
+        FAIL();
+    }catch(std::string){}
+}
+
 TEST(PrefixCalc, NegativeAtEnd)
 {
     try{
@@ -171,4 +218,54 @@ TEST(PrefixCalc, MultipleDigits)
 {
     PrefixCalc calc("-3355.131");
     ASSERT_TRUE(closeEnough(calc.getValue(), -3355.131));
+}
+
+TEST(PrefixCalc, containsX)
+{
+    PrefixCalc("X");
+}
+
+TEST(PrefixCalc, constainsXInCalc)
+{
+    PrefixCalc("* X 1");
+}
+
+TEST(PrefixCalc, XinCalc)
+{
+    try {
+        PrefixCalc calc("* 4 X/");
+        FAIL();
+    } catch (std::string) {}
+}
+TEST(PrefixCalc, XinNum)
+{
+    try {
+        PrefixCalc calc("* 4 X8");
+        FAIL();
+    } catch (std::string) {}
+}
+TEST(PrefixCalc, multipleX)
+{
+    try {
+        PrefixCalc calc("* X X");
+        FAIL();
+    } catch (std::string) {}
+}
+
+TEST(PrefixCalc, getSimpleX)
+{
+    PrefixCalc calc("X");
+    ASSERT_TRUE(closeEnough(calc.getValueIfXIs(4), 4));
+}
+
+TEST(PrefixCalc, getCalcedX)
+{
+    PrefixCalc calc("* 2 X");
+    ASSERT_TRUE(closeEnough(calc.getValueIfXIs(8), 16));
+}
+
+TEST(PrefixCalc, getComplicatedX)
+{
+    PrefixCalc calc("- 4 * + X 5 9");
+    ASSERT_TRUE(closeEnough(calc.getValueIfXIs(4), -77));
 }

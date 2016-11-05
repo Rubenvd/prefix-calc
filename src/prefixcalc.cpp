@@ -1,10 +1,11 @@
 #include "prefixcalc.h"
 #include "nodeleaf.h"
 #include "nodeknot.h"
+#include "nodex.h"
 #include <iostream>
 
 PrefixCalc::PrefixCalc(std::string formula)
-    : _position(0)
+    : _xNode(nullptr), _position(0)
 {
     _tree = constructNode(formula);
 }
@@ -46,6 +47,16 @@ bool PrefixCalc::isCalculation(std::string calculation){
     }
 }
 
+bool PrefixCalc::isX(std::string x){
+    return x == "X";
+}
+
+float PrefixCalc::getValueIfXIs(float val)
+{
+    _xNode->setX(val);
+    return _tree->getValue();
+}
+
 unsigned int PrefixCalc::getNextElementLength(std::string format)
 {
     unsigned int elementLength = 0;
@@ -67,7 +78,6 @@ NodeBase* PrefixCalc::constructNode(std::string format)
 
     std::string nextElement(format.substr(_position, elementLen));
     _position += elementLen + 1;
-
     if(isCalculation(nextElement)){
         NodeKnot * knot = new NodeKnot(nextElement[0]);
         knot->setLeft(constructNode(format));
@@ -75,6 +85,12 @@ NodeBase* PrefixCalc::constructNode(std::string format)
         return knot;
     }else if(isNumber(nextElement)){
         return new NodeLeaf(nextElement);
+    }else if(isX(nextElement)){
+        if(_xNode != nullptr){
+            throw std::string("Too many X's!");
+        }
+        _xNode = new NodeX();
+        return _xNode;
     }else{
         throw std::string("Incorrect string was given");
     }
